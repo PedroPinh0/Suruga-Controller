@@ -1,3 +1,2 @@
-print("Hello")
-print("Teste")
-print("Teste2")
+import pyvisa
+import PyQt5.Widgets
