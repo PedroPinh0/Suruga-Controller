@@ -107,9 +107,9 @@ class MainWindow(QMainWindow):
 
         # Adding Widgets for Up and Down
         self.up_button_z = QPushButton(self)
-        self.up_button_z.setIcon(QIcon('UP.png'))
+        self.up_button_z.setIcon(QIcon('icons/UP.png'))
         self.down_button_z = QPushButton(self)
-        self.down_button_z.setIcon(QIcon('DOWN.png'))
+        self.down_button_z.setIcon(QIcon('icons/DOWN.png'))
         self.UpDownLayout.addWidget(self.up_button_z)
         self.UpDownLayout.addWidget(Clear_Button(self.ZStep_Box))
         self.UpDownLayout.addWidget(self.down_button_z)
@@ -122,13 +122,13 @@ class MainWindow(QMainWindow):
 
         # Adding Widgets for ArrowsLayout
         self.up_button_xy = QPushButton(self)
-        self.up_button_xy.setIcon(QIcon('UP.png'))
+        self.up_button_xy.setIcon(QIcon('icons/UP.png'))
         self.left_button_xy = QPushButton(self)
-        self.left_button_xy.setIcon(QIcon('LEFT.png'))
+        self.left_button_xy.setIcon(QIcon('icons/LEFT.png'))
         self.right_button_xy = QPushButton(self)
-        self.right_button_xy.setIcon(QIcon('RIGHT.png'))
+        self.right_button_xy.setIcon(QIcon('icons/RIGHT.png'))
         self.down_button_xy = QPushButton(self)
-        self.down_button_xy.setIcon(QIcon('DOWN.png'))
+        self.down_button_xy.setIcon(QIcon('icons/DOWN.png'))
         self.ArrowsLayout.addWidget(self.up_button_xy, 0, 1)
         self.ArrowsLayout.addWidget(self.down_button_xy, 2, 1)
         self.ArrowsLayout.addWidget(self.left_button_xy, 1, 0)
