@@ -1,4 +1,5 @@
 import sys
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -8,6 +9,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QLineEdit,
     QLabel,
+    QButtonGroup,
     QFrame,
     QComboBox,
 )
@@ -54,69 +56,129 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Suruga Controller")
 
-        OuterLayout = QGridLayout() # Parent layout
-        ArrowsLayout = QGridLayout() # Arrows layout -- in here are the XY controller
-        UpDownLayout = QVBoxLayout() # Up and Down layout -- z controller
-        XYLayout = QGridLayout() # XY options layout -- step size and others
-        ZLayout = QGridLayout() # Z options layout -- step size and others
+        self.OuterLayout = QGridLayout() # Parent layout
+        self.ArrowsLayout = QGridLayout() # Arrows layout -- in here are the XY controller
+        self.UpDownLayout = QVBoxLayout() # Up and Down layout -- z controller
+        self.XYLayout = QGridLayout() # XY options layout -- step size and others
+        self.ZLayout = QGridLayout() # Z options layout -- step size and others
 
         # Adding Widgets for XYLayout
-        XYstep=0.0
-        XYStep_Box = QLineEdit(str(XYstep))
-        XYStep_Box.setReadOnly(True)
-        XYUnits_Box = QComboBox()
-        XYUnits_Box.addItems([u"10E-6 (µm) ", "10E-3 (cm)"])
-        XYLayout.addWidget(XY_Buttons(0.01, XYStep_Box), 1, 0)
-        XYLayout.addWidget(XY_Buttons(0.1, XYStep_Box), 1, 1)
-        XYLayout.addWidget(XY_Buttons(1, XYStep_Box), 1, 2)
-        XYLayout.addWidget(XY_Buttons(10, XYStep_Box), 2, 0)
-        XYLayout.addWidget(XY_Buttons(100, XYStep_Box), 2, 1)
-        XYLayout.addWidget(XY_Buttons(1000, XYStep_Box), 2, 2)
-        XYLayout.addWidget(QLabel("Step is:"), 0, 0, 1, 2)
-        XYLayout.addWidget(XYStep_Box, 0, 1)
-        XYLayout.addWidget(XYUnits_Box, 0, 2)
-
-        # Adding Widgets for ArrowsLayout
-        ArrowsLayout.addWidget(QPushButton("Up"), 0, 1)
-        ArrowsLayout.addWidget(QPushButton("Down"), 2, 1)
-        ArrowsLayout.addWidget(Clear_Button(XYStep_Box), 1, 1)
-        ArrowsLayout.addWidget(QPushButton("Left"), 1, 0)
-        ArrowsLayout.addWidget(QPushButton("Right"), 1, 2)
+        self.XYstep=0.0
+        self.XYStep_Box = QLineEdit(str(self.XYstep))
+        self.XYStep_Box.setReadOnly(True)
+        self.XYUnits_Box = QComboBox()
+        self.XYUnits_Box.addItems([u"10E-6 (µm) ", "10E-3 (cm)"])
+        self.XYLayout.addWidget(QLabel("Step is:"), 0, 0, 1, 2)
+        self.XYLayout.addWidget(self.XYStep_Box, 0, 1)
+        self.XYLayout.addWidget(self.XYUnits_Box, 0, 2)
+        self.XYLayout.addWidget(XY_Buttons(0.01, self.XYStep_Box), 1, 0)
+        self.XYLayout.addWidget(XY_Buttons(0.1, self.XYStep_Box), 1, 1)
+        self.XYLayout.addWidget(XY_Buttons(1, self.XYStep_Box), 1, 2)
+        self.XYLayout.addWidget(XY_Buttons(10, self.XYStep_Box), 2, 0)
+        self.XYLayout.addWidget(XY_Buttons(100, self.XYStep_Box), 2, 1)
+        self.XYLayout.addWidget(XY_Buttons(1000, self.XYStep_Box), 2, 2)
 
         # Horizontal divider
-        OuterLayout.addWidget(QHLine(), 1, 0, 1, 2)
-        OuterLayout.addWidget(QHLine(), 3, 0, 1, 2)
+        self.OuterLayout.addWidget(QHLine(), 1, 0, 1, 2)
+        self.OuterLayout.addWidget(QHLine(), 3, 0, 1, 2)
+
+        # Net Z distance
+        self.ZNet = 0.0
+        self.Z_Distance = QLineEdit(str(self.ZNet))
+        self.Z_Distance.setReadOnly(True)
+        self.OuterLayout.addWidget(self.Z_Distance, 4,1)
+        self.OuterLayout.addWidget(QLabel(u"Current net Z distance (µm):"), 4, 0)
 
         # Adding Widgets for ZLayout
-        Zstep=0.0
-        ZStep_Box = QLineEdit(str(Zstep))
-        ZStep_Box.setReadOnly(True)
-        ZUnits_Box = QComboBox()
-        ZUnits_Box.addItems([u"10E-6 (µm) ", "10E-3 (cm)"])
-        ZLayout.addWidget(Z_Button(0.01, ZStep_Box), 1, 0)
-        ZLayout.addWidget(Z_Button(0.1, ZStep_Box), 1, 1)
-        ZLayout.addWidget(Z_Button(1, ZStep_Box), 1, 2)
-        ZLayout.addWidget(Z_Button(10, ZStep_Box), 2, 0)
-        ZLayout.addWidget(Z_Button(100, ZStep_Box), 2, 1)
-        ZLayout.addWidget(Z_Button(1000, ZStep_Box), 2, 2)
-        ZLayout.addWidget(QLabel("Step is:"), 0, 0, 1, 2)
-        ZLayout.addWidget(ZStep_Box, 0, 1)
-        ZLayout.addWidget(ZUnits_Box, 0, 2)
+        self.Zstep=0.0
+        self.ZStep_Box = QLineEdit(str(self.Zstep))
+        self.ZStep_Box.setReadOnly(True)
+        self.ZUnits_Box = QComboBox()
+        self.ZUnits_Box.addItems([u"10E-6 (µm)", "10E-3 (cm)"])
+        self.ZLayout.addWidget(QLabel("Step is:"), 0, 0, 1, 2)
+        self.ZLayout.addWidget(self.ZStep_Box, 0, 1)
+        self.ZLayout.addWidget(self.ZUnits_Box, 0, 2)
+        self.ZLayout.addWidget(Z_Button(0.01, self.ZStep_Box), 1, 0)
+        self.ZLayout.addWidget(Z_Button(0.1, self.ZStep_Box), 1, 1)
+        self.ZLayout.addWidget(Z_Button(1, self.ZStep_Box), 1, 2)
+        self.ZLayout.addWidget(Z_Button(10, self.ZStep_Box), 2, 0)
+        self.ZLayout.addWidget(Z_Button(100, self.ZStep_Box), 2, 1)
+        self.ZLayout.addWidget(Z_Button(1000, self.ZStep_Box), 2, 2)
 
         # Adding Widgets for Up and Down
-        UpDownLayout.addWidget(QPushButton("Up"))
-        UpDownLayout.addWidget(Clear_Button(ZStep_Box))
-        UpDownLayout.addWidget(QPushButton("Down"))
+        self.up_button_z = QPushButton(self)
+        self.up_button_z.setIcon(QIcon('UP.png'))
+        self.down_button_z = QPushButton(self)
+        self.down_button_z.setIcon(QIcon('DOWN.png'))
+        self.UpDownLayout.addWidget(self.up_button_z)
+        self.UpDownLayout.addWidget(Clear_Button(self.ZStep_Box))
+        self.UpDownLayout.addWidget(self.down_button_z)
+
+        self.btnZ_grp = QButtonGroup()
+        self.btnZ_grp.setExclusive(True)
+        self.btnZ_grp.addButton(self.up_button_z, 0) #0
+        self.btnZ_grp.addButton(self.down_button_z, 1) #1
+        self.btnZ_grp.buttonClicked.connect(self.on_clickZ)
+
+        # Adding Widgets for ArrowsLayout
+        self.up_button_xy = QPushButton(self)
+        self.up_button_xy.setIcon(QIcon('UP.png'))
+        self.left_button_xy = QPushButton(self)
+        self.left_button_xy.setIcon(QIcon('LEFT.png'))
+        self.right_button_xy = QPushButton(self)
+        self.right_button_xy.setIcon(QIcon('RIGHT.png'))
+        self.down_button_xy = QPushButton(self)
+        self.down_button_xy.setIcon(QIcon('DOWN.png'))
+        self.ArrowsLayout.addWidget(self.up_button_xy, 0, 1)
+        self.ArrowsLayout.addWidget(self.down_button_xy, 2, 1)
+        self.ArrowsLayout.addWidget(self.left_button_xy, 1, 0)
+        self.ArrowsLayout.addWidget(self.right_button_xy, 1, 2)
+        self.ArrowsLayout.addWidget(Clear_Button(self.XYStep_Box), 1, 1)
+
+        self.btnXY_grp = QButtonGroup()
+        self.btnXY_grp.setExclusive(True)
+        self.btnXY_grp.addButton(self.up_button_xy, 0) #0
+        self.btnXY_grp.addButton(self.down_button_xy, 1) #1
+        self.btnXY_grp.addButton(self.left_button_xy, 2) #2
+        self.btnXY_grp.addButton(self.right_button_xy, 3) #3
+        self.btnXY_grp.buttonClicked.connect(self.on_clickXY)
 
         # Nesting all layouts
-        OuterLayout.addLayout(ArrowsLayout, 0, 0)
-        OuterLayout.addLayout(XYLayout, 0, 1)
-        OuterLayout.addLayout(UpDownLayout, 2, 0)
-        OuterLayout.addLayout(ZLayout, 2, 1)
+        self.OuterLayout.addLayout(self.ArrowsLayout, 0, 0)
+        self.OuterLayout.addLayout(self.XYLayout, 0, 1)
+        self.OuterLayout.addLayout(self.UpDownLayout, 2, 0)
+        self.OuterLayout.addLayout(self.ZLayout, 2, 1)
 
-        widget = QWidget()
-        widget.setLayout(OuterLayout)
-        self.setCentralWidget(widget)
+        self.widget = QWidget(self)
+        self.widget.setLayout(self.OuterLayout)
+        self.setCentralWidget(self.widget)
+
+    def on_clickXY(self, btn):
+        if self.btnXY_grp.id(btn) == 0:
+            print("Walking Y+")
+        if self.btnXY_grp.id(btn) == 1:
+            print("Walking Y-")
+        if self.btnXY_grp.id(btn) == 2:
+            print("Walking X-")
+        if self.btnXY_grp.id(btn) == 3:
+            print("Walking X+")
+
+    def on_clickZ(self, btn):
+        if self.ZUnits_Box.currentText() == u"10E-6 (µm)":
+            if self.btnZ_grp.id(btn) == 0:
+                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text()),2)))
+
+            if self.btnZ_grp.id(btn) == 1:
+                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text()),2)))
+
+        if self.ZUnits_Box.currentText() == "10E-3 (cm)":
+            if self.btnZ_grp.id(btn) == 0:
+                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text())*1000,2)))
+
+            if self.btnZ_grp.id(btn) == 1:
+                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text())*1000,2)))
+
+
 
 app = QApplication(sys.argv)
 window = MainWindow()
