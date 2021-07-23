@@ -1,25 +1,52 @@
-# -*- coding: utf8 -*-
 import sys
-from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QWidget,
     QGridLayout,
+    QVBoxLayout,
     QPushButton,
     QLineEdit,
     QLabel,
+    QFrame,
     QComboBox,
 )
 
-class Color(QWidget):
-    def __init__(self, color):
-        super(Color, self).__init__()
-        self.setAutoFillBackground(True)
+class QHLine(QFrame):
+    def __init__(self):
+        super(QHLine, self).__init__()
+        self.setFrameShape(QFrame.HLine)
+        self.setFrameShadow(QFrame.Sunken)
 
-        palette = self.palette()
-        palette.setColor(QPalette.ColorRole.Window, QColor(color))
-        self.setPalette(palette)
+class XY_Buttons(QPushButton):
+    def __init__(self, name, lineEdit:QLineEdit=None):
+        super(XY_Buttons, self).__init__()
+        self.clicked.connect(self.is_clicked)
+        self.setText(str(name))
+        self.lineEdit = lineEdit
+
+    def is_clicked(self):
+        self.lineEdit.setText(str(round(float(self.lineEdit.text())+ float(self.text()),2)))
+
+class Z_Button(QPushButton):
+    def __init__(self, name, lineEdit:QLineEdit=None):
+        super(Z_Button, self).__init__()
+        self.clicked.connect(self.is_clicked)
+        self.setText(str(name))
+        self.lineEdit = lineEdit
+
+    def is_clicked(self):
+        self.lineEdit.setText(str(round(float(self.lineEdit.text())+ float(self.text()),2)))
+
+class Clear_Button(QPushButton):
+    def __init__(self, lineEdit:QLineEdit=None):
+        super(Clear_Button, self).__init__()
+        self.clicked.connect(self.is_clicked)
+        self.setText("CLEAR")
+        self.lineEdit = lineEdit
+
+    def is_clicked(self):
+        self.lineEdit.setText(str(0.00))
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -27,57 +54,71 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Suruga Controller")
 
-        # Parent layout
-        OuterLayout = QGridLayout()
-        # Arrows layout -- in here are the XY controller
-        ArrowsLayout = QGridLayout()
-        # Up and Down layout -- z controller
-        UpDownLayout = QGridLayout()
-        # X options layout -- step size and others
-        XLayout = QGridLayout()
-        # Y options layout -- step size and others
-        YLayout = QGridLayout()
-        # Z options layout -- step size and others
-        ZLayout = QGridLayout()
+        OuterLayout = QGridLayout() # Parent layout
+        ArrowsLayout = QGridLayout() # Arrows layout -- in here are the XY controller
+        UpDownLayout = QVBoxLayout() # Up and Down layout -- z controller
+        XYLayout = QGridLayout() # XY options layout -- step size and others
+        ZLayout = QGridLayout() # Z options layout -- step size and others
+
+        # Adding Widgets for XYLayout
+        XYstep=0.0
+        XYStep_Box = QLineEdit(str(XYstep))
+        XYStep_Box.setReadOnly(True)
+        XYUnits_Box = QComboBox()
+        XYUnits_Box.addItems([u"10E-6 (µm) ", "10E-3 (cm)"])
+        XYLayout.addWidget(XY_Buttons(0.01, XYStep_Box), 1, 0)
+        XYLayout.addWidget(XY_Buttons(0.1, XYStep_Box), 1, 1)
+        XYLayout.addWidget(XY_Buttons(1, XYStep_Box), 1, 2)
+        XYLayout.addWidget(XY_Buttons(10, XYStep_Box), 2, 0)
+        XYLayout.addWidget(XY_Buttons(100, XYStep_Box), 2, 1)
+        XYLayout.addWidget(XY_Buttons(1000, XYStep_Box), 2, 2)
+        XYLayout.addWidget(QLabel("Step is:"), 0, 0, 1, 2)
+        XYLayout.addWidget(XYStep_Box, 0, 1)
+        XYLayout.addWidget(XYUnits_Box, 0, 2)
 
         # Adding Widgets for ArrowsLayout
         ArrowsLayout.addWidget(QPushButton("Up"), 0, 1)
         ArrowsLayout.addWidget(QPushButton("Down"), 2, 1)
+        ArrowsLayout.addWidget(Clear_Button(XYStep_Box), 1, 1)
         ArrowsLayout.addWidget(QPushButton("Left"), 1, 0)
         ArrowsLayout.addWidget(QPushButton("Right"), 1, 2)
-        ArrowsLayout.addWidget(QPushButton("Lock X-Y"), 1, 1)
 
-        # Adding Widgets for XLayout
-        Step_Box = QLineEdit("Teste")
-        Step_Box.setReadOnly(True)
-        Unit_Box = QComboBox()
-        Unit_Box.addItems([u"µm", "cm"])
-        XLayout.addWidget(QPushButton("0.01"), 1, 0)
-        XLayout.addWidget(QPushButton("0.1"), 1, 1)
-        XLayout.addWidget(QPushButton("1"), 1, 2)
-        XLayout.addWidget(QPushButton("10"), 2, 0)
-        XLayout.addWidget(QPushButton("100"), 2, 1)
-        XLayout.addWidget(QPushButton("1000"), 2, 2)
-        XLayout.addWidget(QPushButton("CLEAR"), 0, 2, 1, 2)
-        XLayout.addWidget(QLabel("X Step is:"), 0, 0, 1, 2)
-        XLayout.addWidget(Step_Box, 0, 1)
-        XLayout.addWidget(Unit_Box, 3, 1)
+        # Horizontal divider
+        OuterLayout.addWidget(QHLine(), 1, 0, 1, 2)
+        OuterLayout.addWidget(QHLine(), 3, 0, 1, 2)
+
+        # Adding Widgets for ZLayout
+        Zstep=0.0
+        ZStep_Box = QLineEdit(str(Zstep))
+        ZStep_Box.setReadOnly(True)
+        ZUnits_Box = QComboBox()
+        ZUnits_Box.addItems([u"10E-6 (µm) ", "10E-3 (cm)"])
+        ZLayout.addWidget(Z_Button(0.01, ZStep_Box), 1, 0)
+        ZLayout.addWidget(Z_Button(0.1, ZStep_Box), 1, 1)
+        ZLayout.addWidget(Z_Button(1, ZStep_Box), 1, 2)
+        ZLayout.addWidget(Z_Button(10, ZStep_Box), 2, 0)
+        ZLayout.addWidget(Z_Button(100, ZStep_Box), 2, 1)
+        ZLayout.addWidget(Z_Button(1000, ZStep_Box), 2, 2)
+        ZLayout.addWidget(QLabel("Step is:"), 0, 0, 1, 2)
+        ZLayout.addWidget(ZStep_Box, 0, 1)
+        ZLayout.addWidget(ZUnits_Box, 0, 2)
+
+        # Adding Widgets for Up and Down
+        UpDownLayout.addWidget(QPushButton("Up"))
+        UpDownLayout.addWidget(Clear_Button(ZStep_Box))
+        UpDownLayout.addWidget(QPushButton("Down"))
 
         # Nesting all layouts
         OuterLayout.addLayout(ArrowsLayout, 0, 0)
-        OuterLayout.addLayout(XLayout, 0, 1)
-        OuterLayout.addLayout(YLayout, 0, 2)
-        OuterLayout.addLayout(UpDownLayout, 1, 0)
-        OuterLayout.addLayout(ZLayout, 1, 1)
+        OuterLayout.addLayout(XYLayout, 0, 1)
+        OuterLayout.addLayout(UpDownLayout, 2, 0)
+        OuterLayout.addLayout(ZLayout, 2, 1)
 
         widget = QWidget()
         widget.setLayout(OuterLayout)
         self.setCentralWidget(widget)
 
-
 app = QApplication(sys.argv)
-
 window = MainWindow()
 window.show()
-
 app.exec()
