@@ -5,20 +5,9 @@ E-mail: ppinho@ifi.unicamp.br
 
 import sys
 import os
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QWidget,
-    QGridLayout,
-    QVBoxLayout,
-    QPushButton,
-    QLineEdit,
-    QLabel,
-    QButtonGroup,
-    QFrame,
-    QComboBox,
-)
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 # Horizontal divider class -- just a simple line
 class QHLine(QFrame):
@@ -39,7 +28,7 @@ class Buttons(QPushButton):
 
     # Increments the QLineEdit with the corresponding value of the button
     def is_clicked(self):
-        self.lineEdit.setText(str(round(float(self.lineEdit.text())+ float(self.text()),2)))
+        self.lineEdit.setText(str(round(float(self.lineEdit.text()) + float(self.text()),2)))
 
 # Similar to 'Buttons' but its function is to clear the QLineEdit box taken as argument
 class Clear_Button(QPushButton):
@@ -57,6 +46,12 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        # Fixes the size of the screen. In my option the size I choose is visually
+        # pleasant. If you want to have the option to resize the screen, comment
+        # this line. But note that because I used layouts to construct the GUI
+        # resizing the screen will probably not be that useful.
+        self.setFixedSize(600, 350)
+
         # The layout of the window are nested child layouts
         self.OuterLayout = QGridLayout() # Parent layout
         self.ArrowsLayout = QGridLayout() # Arrows layout -- in here are the XY controller
@@ -68,10 +63,12 @@ class MainWindow(QMainWindow):
         self.XYStep_Box = QLineEdit("0.0")                                      # It starts with 0.0
         self.XYStep_Box.setReadOnly(True)                                       # Disable user input
         self.XYUnits_Box = QComboBox()                                          # A drop-down list to choose the unit
-        self.XYUnits_Box.addItems([u"10E-6 (µm) ", "10E-3 (cm)"])
-        self.XYLayout.addWidget(QLabel("Step is:"), 0, 0, 1, 2)
-        self.XYLayout.addWidget(self.XYStep_Box, 0, 1)
-        self.XYLayout.addWidget(self.XYUnits_Box, 0, 2)
+        self.XYUnits_Box.addItems([u"(µm)", "(mm)"])
+        self.XYStep_Label = QLabel("STEP:")
+        self.XYStep_Label.setFont(QFont("Arial", 14, weight = QFont.Bold))
+        self.XYLayout.addWidget(self.XYStep_Label, 0, 0, 1, 2)
+        self.XYLayout.addWidget(self.XYStep_Box, 0, 1, 1, 2)
+        self.XYLayout.addWidget(self.XYUnits_Box, 0, 3)
         self.XYLayout.addWidget(Buttons(0.01, self.XYStep_Box), 1, 0)
         self.XYLayout.addWidget(Buttons(0.1, self.XYStep_Box), 1, 1)
         self.XYLayout.addWidget(Buttons(1, self.XYStep_Box), 1, 2)
@@ -88,16 +85,20 @@ class MainWindow(QMainWindow):
         self.Z_Distance = QLineEdit("0.0")
         self.Z_Distance.setReadOnly(True)
         self.OuterLayout.addWidget(self.Z_Distance, 6,1)
-        self.OuterLayout.addWidget(QLabel(u"Current net Z distance (µm):"), 6, 0)
+        self.ZDistance_label = QLabel(u"Current net Z distance (µm):")
+        self.ZDistance_label.setFont(QFont("Arial", 14, weight = QFont.Bold))
+        self.OuterLayout.addWidget(self.ZDistance_label, 6, 0)
 
         # Adding Widgets for ZLayout
         self.ZStep_Box = QLineEdit("0.0")
         self.ZStep_Box.setReadOnly(True)
         self.ZUnits_Box = QComboBox()
-        self.ZUnits_Box.addItems([u"10E-6 (µm)", "10E-3 (cm)"])
-        self.ZLayout.addWidget(QLabel("Step is:"), 0, 0, 1, 2)
-        self.ZLayout.addWidget(self.ZStep_Box, 0, 1)
-        self.ZLayout.addWidget(self.ZUnits_Box, 0, 2)
+        self.ZUnits_Box.addItems([u"(µm)", "(mm)"])
+        self.ZStep_Label = QLabel("STEP:")
+        self.ZStep_Label.setFont(QFont("Arial", 14, weight = QFont.Bold))
+        self.ZLayout.addWidget(self.ZStep_Label, 0, 0, 1, 2)
+        self.ZLayout.addWidget(self.ZStep_Box, 0, 1, 1, 2)
+        self.ZLayout.addWidget(self.ZUnits_Box, 0, 3)
         self.ZLayout.addWidget(Buttons(0.01, self.ZStep_Box), 1, 0)
         self.ZLayout.addWidget(Buttons(0.1, self.ZStep_Box), 1, 1)
         self.ZLayout.addWidget(Buttons(1, self.ZStep_Box), 1, 2)
@@ -105,12 +106,16 @@ class MainWindow(QMainWindow):
         self.ZLayout.addWidget(Buttons(100, self.ZStep_Box), 2, 1)
         self.ZLayout.addWidget(Buttons(1000, self.ZStep_Box), 2, 2)
 
-        # Adding a Warning Label for when the user chooses cm in the unit box
+        # Adding a Warning Label for when the user chooses mm in the unit box
         self.ZUnits_Box.currentIndexChanged.connect(self.Combo_changed)         # Changing the XY unit value triggers the function 'Combo_changed'
         self.XYUnits_Box.currentIndexChanged.connect(self.Combo_changed)        # Changing the Z unit value trigger the function 'Combo_changed'
-        self.OuterLayout.addWidget(QLabel("WARNINGS:"), 0, 0)
-        self.Warning_label = QLabel("")
+        self.Warning_label = QLabel("All good")
+        self.Warning_label.setStyleSheet("color: green")
+        self.Warning_label.setFont(QFont("Arial", 14, weight = QFont.Bold))
+        self.Warning_title = QLabel("WARNINGS:")
+        self.Warning_title.setFont(QFont("Arial", 14, weight = QFont.Bold))
         self.OuterLayout.addWidget(self.Warning_label, 0, 1)
+        self.OuterLayout.addWidget(self.Warning_title, 0, 0)
 
         # Adding Widgets for Z-Up, Z-Down and Z-Clear
         self.up_button_z = QPushButton(self)
@@ -152,6 +157,11 @@ class MainWindow(QMainWindow):
         self.btnXY_grp.addButton(self.right_button_xy, 3)                       # XY-Right has ID #3
         self.btnXY_grp.buttonClicked.connect(self.on_clickXY)                   # Clicking any of the buttons trigger the function 'on_clickXY'
 
+        # Fixing some grid elements spacings
+        self.XYLayout.setHorizontalSpacing(0)                                   # Thigtens the space between the buttons on the right side
+        self.ZLayout.setHorizontalSpacing(0)                                    # Thigtens the space between the buttons on the right side
+        self.OuterLayout.setHorizontalSpacing(100)                              # Gives a bit of space between the direction controls and step buttons
+
         # Nesting all layouts
         self.OuterLayout.addLayout(self.ArrowsLayout, 2, 0)
         self.OuterLayout.addLayout(self.XYLayout, 2, 1)
@@ -165,28 +175,33 @@ class MainWindow(QMainWindow):
     # This function is triggered when any of the ComboBoxs are changed
     def Combo_changed(self, combo):
         warning = [0,0]
-        # The warning vector hold the information of what ComboBox has the cm unit selected
-        if self.XYUnits_Box.currentText() == "10E-3 (cm)": warning[0] = 1
-        if self.ZUnits_Box.currentText() == "10E-3 (cm)": warning[1] = 1
+        # The warning vector hold the information of what ComboBox has the mm unit selected
+        if self.XYUnits_Box.currentText() == "(mm)": warning[0] = 1
+        if self.ZUnits_Box.currentText() == "(mm)": warning[1] = 1
 
-        # The warning mensage is different depending on whether the Z-Unit is cm, XY-unit is cm or both
+        # The warning mensage is different depending on whether the Z-Unit is mm, XY-unit is mm or both
         if warning[0] == 1:
             self.Warning_label.setText("XY UNIT IS HIGH!! CAREFULL!!")
+            self.Warning_label.setStyleSheet("color: red")
 
         if warning[1] == 1:
             self.Warning_label.setText("Z UNIT IS HIGH!! CAREFULL!!")
+            self.Warning_label.setStyleSheet("color: red")
 
         if warning[1] == 1 and warning[0] == 1:
             self.Warning_label.setText("ALL UNITS ARE HIGH!! CAREFULL!!")
+            self.Warning_label.setStyleSheet("color: red")
 
         if warning[1] == 0 and warning[0] == 0:
-            self.Warning_label.setText("")
+            self.Warning_label.setText("All good")
+            self.Warning_label.setStyleSheet("color: green")
 
     # This is the function that send the signal to SURUGA to move in the
     # direction corresponding to the XY-button pressed and distance given by the
     # XY Step_box value and the unit choosen.
     def on_clickXY(self, btn):
-        if self.XYUnits_Box.currentText() == u"10E-6 (µm)":
+        if self.XYUnits_Box.currentText() == u"(µm)":
+            print("micron")
             if self.btnXY_grp.id(btn) == 0:
                 print(float(self.XYStep_Box.text())*10E-6, "in the Y+")         # Moves in the positive y-direction
             if self.btnXY_grp.id(btn) == 1:
@@ -196,7 +211,8 @@ class MainWindow(QMainWindow):
             if self.btnXY_grp.id(btn) == 3:
                 print(float(self.XYStep_Box.text())*10E-6, "in the X+")         # Moves in the positive x-direction
 
-        if self.XYUnits_Box.currentText() == "10E-3 (cm)":
+        if self.XYUnits_Box.currentText() == "(mm)":
+            print("milimeter")
             if self.btnXY_grp.id(btn) == 0:
                 print(float(self.XYStep_Box.text())*10E-3, "in the Y+")         # Moves in the positive y-direction
             if self.btnXY_grp.id(btn) == 1:
@@ -211,7 +227,7 @@ class MainWindow(QMainWindow):
     # Z Step_box value and the unit choosen. It also updates the current net z
     # distance traveled.
     def on_clickZ(self, btn):
-        if self.ZUnits_Box.currentText() == u"10E-6 (µm)":
+        if self.ZUnits_Box.currentText() == u"(µm)":
             if self.btnZ_grp.id(btn) == 0:
                 self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text()),2)))
                 print(float(self.ZStep_Box.text())*10E-6, "in the Z+")
@@ -220,7 +236,7 @@ class MainWindow(QMainWindow):
                 self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text()),2)))
                 print(float(self.ZStep_Box.text())*10E-6, "in the Z-")
 
-        if self.ZUnits_Box.currentText() == "10E-3 (cm)":
+        if self.ZUnits_Box.currentText() == "(mm)":
             if self.btnZ_grp.id(btn) == 0:
                 self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text())*10E3,2)))
                 print(float(self.ZStep_Box.text())*10E-3, "in the Z+")
