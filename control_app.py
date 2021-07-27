@@ -49,6 +49,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        scriptDir = os.path.dirname(os.path.realpath("control_app.py"))
+        self.setWindowIcon(QIcon(scriptDir + os.path.sep + 'icons/LOGO.png'))
+
         # Fixes the size of the screen. In my option the size I choose is visually
         # pleasant. If you want to have the option to resize the screen, comment
         # this line. But note that because I used layouts to construct the GUI
@@ -164,6 +167,7 @@ class MainWindow(QMainWindow):
         self.XYLayout.setHorizontalSpacing(0)                                   # Thigtens the space between the buttons on the right side
         self.ZLayout.setHorizontalSpacing(0)                                    # Thigtens the space between the buttons on the right side
         self.OuterLayout.setHorizontalSpacing(100)                              # Gives a bit of space between the direction controls and step buttons
+        self.OuterLayout.setVerticalSpacing(50)
 
         # Nesting all layouts
         self.OuterLayout.addLayout(self.ArrowsLayout, 2, 0)
@@ -213,10 +217,10 @@ class MainWindow(QMainWindow):
                 print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the Y-")         # Moves in the negative y-direction
             if self.btnXY_grp.id(btn) == 2:
                 step(2,round(float(self.XYStep_Box.text())*0.000001, 8),1)
-                print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the X-")         # Moves in the negative x-direction
+                print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the X+")         # Moves in the negative x-direction
             if self.btnXY_grp.id(btn) == 3:
                 step(2,round(float(self.XYStep_Box.text())*0.000001, 8),-1)
-                print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the X+")         # Moves in the positive x-direction
+                print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the X-")         # Moves in the positive x-direction
 
         if self.XYUnits_Box.currentText() == "(mm)":
             if self.btnXY_grp.id(btn) == 0:
@@ -325,18 +329,9 @@ def step(axis, step_meters, direction):
             cmd = 'AXI1:selsp ' + speed + ' :PULS ' + step_str + ':GO ' + str_dir_z + ':DW'
             inst_z.write(cmd)
 
-# This function will run when the close button is pressed. It is important
-# as it will close the ports making the connection between Pyvisa and Suruga
-# and prevent errors
-def kill_app():
-    inst_xy.close()
-    inst_z.close()
-    app.exec()
 
 app = QApplication(sys.argv)
 window = MainWindow()
 window.setWindowTitle("Suruga Controller")
-scriptDir = os.path.dirname(os.path.realpath("control_app.py"))
-window.setWindowIcon(QIcon(scriptDir + os.path.sep + 'icon/win_logo.png'))
 window.show()
-sys.exit(kill_app())
+sys.exit(app.exec())
