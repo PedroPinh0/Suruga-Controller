@@ -5,9 +5,13 @@ E-mail: ppinho@ifi.unicamp.br
 
 import sys
 import os
+import time
+#import pyvisa as visa
+import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+
 
 # Horizontal divider class -- just a simple line
 class QHLine(QFrame):
