@@ -9,6 +9,8 @@ The XY controllers and Z controllers are identical. On the left side you have th
 
 There is also a Net Z distance traveled logger in the bottom of the window.
 
+This is open project so do what you want with this code. This code clearly isn't a masterpiece in terms of organization and definetly not Pythonic enough. Feel free to fork it and make it better.
+
 
 <!-- CONTACT -->
 ## Contact

@@ -6,12 +6,11 @@ E-mail: ppinho@ifi.unicamp.br
 import sys
 import os
 import time
-#import pyvisa as visa
+import pyvisa as visa
 import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-
 
 # Horizontal divider class -- just a simple line
 class QHLine(QFrame):
@@ -54,7 +53,7 @@ class MainWindow(QMainWindow):
         # pleasant. If you want to have the option to resize the screen, comment
         # this line. But note that because I used layouts to construct the GUI
         # resizing the screen will probably not be that useful.
-        self.setFixedSize(600, 350)
+        #self.setFixedSize(600, 350)
 
         # The layout of the window are nested child layouts
         self.OuterLayout = QGridLayout() # Parent layout
@@ -202,26 +201,35 @@ class MainWindow(QMainWindow):
 
     # This is the function that send the signal to SURUGA to move in the
     # direction corresponding to the XY-button pressed and distance given by the
-    # XY Step_box value and the unit choosen.
+    # XY Step_box value and the unit choosen. The ´step´ function is defined
+    # at the end of the code.
     def on_clickXY(self, btn):
         if self.XYUnits_Box.currentText() == u"(µm)":
             if self.btnXY_grp.id(btn) == 0:
+                step(1,round(float(self.XYStep_Box.text())*0.000001, 8),1)
                 print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the Y+")         # Moves in the positive y-direction
             if self.btnXY_grp.id(btn) == 1:
+                step(1,round(float(self.XYStep_Box.text())*0.000001, 8),-1)
                 print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the Y-")         # Moves in the negative y-direction
             if self.btnXY_grp.id(btn) == 2:
+                step(2,round(float(self.XYStep_Box.text())*0.000001, 8),1)
                 print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the X-")         # Moves in the negative x-direction
             if self.btnXY_grp.id(btn) == 3:
+                step(2,round(float(self.XYStep_Box.text())*0.000001, 8),-1)
                 print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the X+")         # Moves in the positive x-direction
 
         if self.XYUnits_Box.currentText() == "(mm)":
             if self.btnXY_grp.id(btn) == 0:
+                step(1,round(float(self.XYStep_Box.text())*0.001, 8),1)
                 print(round(float(self.XYStep_Box.text())*0.001, 8), "in the Y+")         # Moves in the positive y-direction
             if self.btnXY_grp.id(btn) == 1:
+                step(1,round(float(self.XYStep_Box.text())*0.001, 8),1)
                 print(round(float(self.XYStep_Box.text())*0.001, 8), "in the Y-")         # Moves in the negative y-direction
             if self.btnXY_grp.id(btn) == 2:
+                step(2,round(float(self.XYStep_Box.text())*0.001, 8),1)
                 print(round(float(self.XYStep_Box.text())*0.001, 8), "in the X-")         # Moves in the negative x-direction
             if self.btnXY_grp.id(btn) == 3:
+                step(2,round(float(self.XYStep_Box.text())*0.001, 8),1)
                 print(round(float(self.XYStep_Box.text())*0.001, 8), "in the X+")         # Moves in the positive x-direction
 
     # This is the function that send the signal to SURUGA to move in the
@@ -231,21 +239,99 @@ class MainWindow(QMainWindow):
     def on_clickZ(self, btn):
         if self.ZUnits_Box.currentText() == u"(µm)":
             if self.btnZ_grp.id(btn) == 0:
-                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text()),2)))
+                step(3,round(float(self.XYStep_Box.text())*0.000001, 8),1)
+                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text()),2)))             # Moves in the positive Z direction (um)
                 print(round(float(self.ZStep_Box.text())*0.000001, 8), "in the Z+")
 
             if self.btnZ_grp.id(btn) == 1:
-                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text()),2)))
+                step(3,round(float(self.XYStep_Box.text())*0.000001, 8),-1)
+                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text()),2)))             # Moves in the negative Z direction (um)
                 print(round(float(self.ZStep_Box.text())*0.000001, 8), "in the Z-")
 
         if self.ZUnits_Box.currentText() == "(mm)":
             if self.btnZ_grp.id(btn) == 0:
-                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text())*10E3,2)))
+                step(3,round(float(self.XYStep_Box.text())*0.001, 8),1)
+                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text())*10E3,2)))       # Moves in the positive Z direction (mm)
                 print(round(float(self.ZStep_Box.text())*0.001, 8), "in the Z+")
 
             if self.btnZ_grp.id(btn) == 1:
-                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text())*10E3,2)))
+                step(3,round(float(self.XYStep_Box.text())*0.001, 8),-1)
+                self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text())*10E3,2)))       # Moves in the negative z direction (mm)
                 print(round(float(self.ZStep_Box.text())*0.001, 8), "in the Z-")
+
+
+rm=visa.ResourceManager()
+rm.list_resources()
+dev = rm.open_resource('ASRL9::INSTR')
+dev.write_termination = '\r'
+dev.read_termination = '\r'
+dev.baud_rate = 9600
+dev.query('*IDN?')
+dev.close()
+
+inst_xy = visa.ResourceManager().open_resource('ASRL9::INSTR')
+inst_z = visa.ResourceManager().open_resource('ASRL8::INSTR')
+inst_xy.write_termination='\r'
+inst_xy.read_termination='\r'
+inst_z.write_termination='\r'
+inst_z.read_termination='\r'
+inst_xy.baud_rate = 9600
+inst_z.baud_rate = 9600
+
+def step(axis, step_meters, direction):
+    #print values
+    str_dir = 'CCW'
+    str_dir_z = 'CW'
+
+    if direction == 1:
+        str_dir = 'CW'
+        str_dir_z = 'CCW'
+
+    if abs(step_meters)<50e-9:
+        speed='0'
+    elif abs(step_meters)<100e-9:
+        speed='1'
+    elif abs(step_meters)<500e-9:
+        speed='2'
+    elif abs(step_meters)<1e-6:
+        speed='3'
+    elif abs(step_meters)<5e-6:
+        speed='4'
+    elif abs(step_meters)<10e-6:
+        speed='5'
+    elif abs(step_meters)<100e-6:
+        speed='6'
+    elif abs(step_meters)<500e-6:
+        speed='7'
+    elif abs(step_meters)<1e-3:
+        speed='8'
+    else:
+        speed='9'
+
+    #Controlador-> 1 pulso = 1 micron
+    #Pág. 72 do manual - position C--> 1 step = 10 nm
+    step = round(step_meters/10e-9);
+    step_str = str(step);
+
+    if float(step) != 0.001:
+        #driv_div = str(0)
+        if axis == 1:
+            cmd = 'AXI1:selsp ' + speed + ' :PULS ' + step_str + ':GO ' + str_dir + ':DW'
+            inst_xy.write(cmd)
+        if axis == 2:
+            cmd = 'AXI2:selsp ' + speed + ' :PULS ' + step_str + ':GO ' + str_dir + ':DW'
+            inst_xy.write(cmd)
+        elif axis == 3:
+            cmd = 'AXI1:selsp ' + speed + ' :PULS ' + step_str + ':GO ' + str_dir_z + ':DW'
+            inst_z.write(cmd)
+
+# This function will run when the close button is pressed. It is important
+# as it will close the ports making the connection between Pyvisa and Suruga
+# and prevent errors
+def kill_app():
+    inst_xy.close()
+    inst_z.close()
+    app.exec()
 
 app = QApplication(sys.argv)
 window = MainWindow()
@@ -253,4 +339,4 @@ window.setWindowTitle("Suruga Controller")
 scriptDir = os.path.dirname(os.path.realpath("control_app.py"))
 window.setWindowIcon(QIcon(scriptDir + os.path.sep + 'icon/win_logo.png'))
 window.show()
-app.exec()
+sys.exit(kill_app())
