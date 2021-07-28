@@ -56,7 +56,8 @@ class MainWindow(QMainWindow):
         # pleasant. If you want to have the option to resize the screen, comment
         # this line. But note that because I used layouts to construct the GUI
         # resizing the screen will probably not be that useful.
-        #self.setFixedSize(600, 350)
+
+        #self.setFixedSize(654, 583)
 
         # The layout of the window are nested child layouts
         self.OuterLayout = QGridLayout() # Parent layout
@@ -167,7 +168,10 @@ class MainWindow(QMainWindow):
         self.XYLayout.setHorizontalSpacing(0)                                   # Thigtens the space between the buttons on the right side
         self.ZLayout.setHorizontalSpacing(0)                                    # Thigtens the space between the buttons on the right side
         self.OuterLayout.setHorizontalSpacing(100)                              # Gives a bit of space between the direction controls and step buttons
-        self.OuterLayout.setVerticalSpacing(50)
+        self.OuterLayout.setVerticalSpacing(20)
+        self.ArrowsLayout.setVerticalSpacing(10)
+        self.ArrowsLayout.setHorizontalSpacing(10)
+        self.UpDownLayout.setSpacing(10)
 
         # Nesting all layouts
         self.OuterLayout.addLayout(self.ArrowsLayout, 2, 0)
@@ -210,31 +214,31 @@ class MainWindow(QMainWindow):
     def on_clickXY(self, btn):
         if self.XYUnits_Box.currentText() == u"(µm)":
             if self.btnXY_grp.id(btn) == 0:
-                step(1,round(float(self.XYStep_Box.text())*0.000001, 8),1)
-                print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the Y+")         # Moves in the positive y-direction
+                step(1,round(float(self.XYStep_Box.text())*1E-6, 8), 1)
+                print(round(float(self.XYStep_Box.text())*1E-6, 8), "in the Y+")         # Moves in the positive y-direction
             if self.btnXY_grp.id(btn) == 1:
-                step(1,round(float(self.XYStep_Box.text())*0.000001, 8),-1)
-                print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the Y-")         # Moves in the negative y-direction
+                step(1,round(float(self.XYStep_Box.text())*1E-6, 8), -1)
+                print(round(float(self.XYStep_Box.text())*1E-6, 8), "in the Y-")         # Moves in the negative y-direction
             if self.btnXY_grp.id(btn) == 2:
-                step(2,round(float(self.XYStep_Box.text())*0.000001, 8),1)
-                print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the X+")         # Moves in the negative x-direction
+                step(2,round(float(self.XYStep_Box.text())*1E-6, 8), 1)
+                print(round(float(self.XYStep_Box.text())*1E-6, 8), "in the X-")         # Moves in the negative x-direction
             if self.btnXY_grp.id(btn) == 3:
-                step(2,round(float(self.XYStep_Box.text())*0.000001, 8),-1)
-                print(round(float(self.XYStep_Box.text())*0.000001, 8), "in the X-")         # Moves in the positive x-direction
+                step(2,round(float(self.XYStep_Box.text())*1E-6, 8), -1)
+                print(round(float(self.XYStep_Box.text())*1E-6, 8), "in the X+")         # Moves in the positive x-direction
 
         if self.XYUnits_Box.currentText() == "(mm)":
             if self.btnXY_grp.id(btn) == 0:
-                step(1,round(float(self.XYStep_Box.text())*0.001, 8),1)
-                print(round(float(self.XYStep_Box.text())*0.001, 8), "in the Y+")         # Moves in the positive y-direction
+                step(1,round(float(self.XYStep_Box.text())*1E-3, 8), 1)
+                print(round(float(self.XYStep_Box.text())*1E-3, 8), "in the Y+")         # Moves in the positive y-direction
             if self.btnXY_grp.id(btn) == 1:
-                step(1,round(float(self.XYStep_Box.text())*0.001, 8),1)
-                print(round(float(self.XYStep_Box.text())*0.001, 8), "in the Y-")         # Moves in the negative y-direction
+                step(1,round(float(self.XYStep_Box.text())*1E-3, 8), -1)
+                print(round(float(self.XYStep_Box.text())*1E-3, 8), "in the Y-")         # Moves in the negative y-direction
             if self.btnXY_grp.id(btn) == 2:
-                step(2,round(float(self.XYStep_Box.text())*0.001, 8),1)
-                print(round(float(self.XYStep_Box.text())*0.001, 8), "in the X-")         # Moves in the negative x-direction
+                step(2,round(float(self.XYStep_Box.text())*1E-3, 8), 1)
+                print(round(float(self.XYStep_Box.text())*1E-3, 8), "in the X-")         # Moves in the negative x-direction
             if self.btnXY_grp.id(btn) == 3:
-                step(2,round(float(self.XYStep_Box.text())*0.001, 8),1)
-                print(round(float(self.XYStep_Box.text())*0.001, 8), "in the X+")         # Moves in the positive x-direction
+                step(2,round(float(self.XYStep_Box.text())*1E-3, 8), -1)
+                print(round(float(self.XYStep_Box.text())*1E-3, 8), "in the X+")         # Moves in the positive x-direction
 
     # This is the function that send the signal to SURUGA to move in the
     # direction corresponding to the Z-button pressed and distance given by the
@@ -243,29 +247,28 @@ class MainWindow(QMainWindow):
     def on_clickZ(self, btn):
         if self.ZUnits_Box.currentText() == u"(µm)":
             if self.btnZ_grp.id(btn) == 0:
-                step(3,round(float(self.XYStep_Box.text())*0.000001, 8),1)
+                step(3,round(float(self.ZStep_Box.text())*1E-6, 8),1)
                 self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text()),2)))             # Moves in the positive Z direction (um)
-                print(round(float(self.ZStep_Box.text())*0.000001, 8), "in the Z+")
+                print(round(float(self.ZStep_Box.text())*1E-6, 8), "in the Z+")
 
             if self.btnZ_grp.id(btn) == 1:
-                step(3,round(float(self.XYStep_Box.text())*0.000001, 8),-1)
+                step(3,round(float(self.ZStep_Box.text())*1E-6, 8),-1)
                 self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text()),2)))             # Moves in the negative Z direction (um)
-                print(round(float(self.ZStep_Box.text())*0.000001, 8), "in the Z-")
+                print(round(float(self.ZStep_Box.text())*1E-6, 8), "in the Z-")
 
         if self.ZUnits_Box.currentText() == "(mm)":
             if self.btnZ_grp.id(btn) == 0:
-                step(3,round(float(self.XYStep_Box.text())*0.001, 8),1)
+                step(3,round(float(self.ZStep_Box.text())*1E-3, 8),1)
                 self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) + float(self.ZStep_Box.text())*10E3,2)))       # Moves in the positive Z direction (mm)
-                print(round(float(self.ZStep_Box.text())*0.001, 8), "in the Z+")
+                print(round(float(self.ZStep_Box.text())*1E-3, 8), "in the Z+")
 
             if self.btnZ_grp.id(btn) == 1:
-                step(3,round(float(self.XYStep_Box.text())*0.001, 8),-1)
+                step(3,round(float(self.ZStep_Box.text())*1E-3, 8),-1)
                 self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text())*10E3,2)))       # Moves in the negative z direction (mm)
-                print(round(float(self.ZStep_Box.text())*0.001, 8), "in the Z-")
+                print(round(float(self.ZStep_Box.text())*1E-3, 8), "in the Z-")
 
 
 rm=visa.ResourceManager()
-rm.list_resources()
 dev = rm.open_resource('ASRL9::INSTR')
 dev.write_termination = '\r'
 dev.read_termination = '\r'
