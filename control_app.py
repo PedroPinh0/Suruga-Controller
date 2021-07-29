@@ -1,7 +1,6 @@
 """
 Author: Pedro Pinho
 E-mail: ppinho@ifi.unicamp.br
-Teste de upload github
 """
 
 import sys
