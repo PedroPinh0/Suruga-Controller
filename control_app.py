@@ -6,7 +6,8 @@ E-mail: ppinho@ifi.unicamp.br
 import sys
 import os
 import time
-import pyvisa as visa
+from ascii_welcome import *
+#import pyvisa as visa
 import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -268,22 +269,22 @@ class MainWindow(QMainWindow):
                 print(round(float(self.ZStep_Box.text()), 8), "mm in the Z-")
 
 
-rm=visa.ResourceManager()
-dev = rm.open_resource('ASRL9::INSTR')
-dev.write_termination = '\r'
-dev.read_termination = '\r'
-dev.baud_rate = 9600
-dev.query('*IDN?')
-dev.close()
-
-inst_xy = visa.ResourceManager().open_resource('ASRL9::INSTR')
-inst_z = visa.ResourceManager().open_resource('ASRL8::INSTR')
-inst_xy.write_termination='\r'
-inst_xy.read_termination='\r'
-inst_z.write_termination='\r'
-inst_z.read_termination='\r'
-inst_xy.baud_rate = 9600
-inst_z.baud_rate = 9600
+# rm=visa.ResourceManager()
+# dev = rm.open_resource('ASRL9::INSTR')
+# dev.write_termination = '\r'
+# dev.read_termination = '\r'
+# dev.baud_rate = 9600
+# dev.query('*IDN?')
+# dev.close()
+#
+# inst_xy = visa.ResourceManager().open_resource('ASRL9::INSTR')
+# inst_z = visa.ResourceManager().open_resource('ASRL8::INSTR')
+# inst_xy.write_termination='\r'
+# inst_xy.read_termination='\r'
+# inst_z.write_termination='\r'
+# inst_z.read_termination='\r'
+# inst_xy.baud_rate = 9600
+# inst_z.baud_rate = 9600
 
 def step(axis, step_meters, direction):
     #print values
@@ -337,4 +338,5 @@ app = QApplication(sys.argv)
 window = MainWindow()
 window.setWindowTitle("Suruga Controller")
 window.show()
+ascii_welcome()
 sys.exit(app.exec())
