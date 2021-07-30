@@ -7,7 +7,7 @@ import sys
 import os
 import time
 from ascii_welcome import *
-import pyvisa as visa
+#import pyvisa as visa
 import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -219,23 +219,23 @@ class MainWindow(QMainWindow):
             step(3,round(float(self.ZStep_Box.text())*1E-6, 8),-1)
             self.Z_Distance.setText(str(round(float(self.Z_Distance.text()) - float(self.ZStep_Box.text()),2)))             # Moves in the negative Z direction (um)
             print(round(float(self.ZStep_Box.text()), 8), u"µm in the Z-")
-
-rm=visa.ResourceManager()
-dev = rm.open_resource('ASRL9::INSTR')
-dev.write_termination = '\r'
-dev.read_termination = '\r'
-dev.baud_rate = 9600
-dev.query('*IDN?')
-dev.close()
-
-inst_xy = visa.ResourceManager().open_resource('ASRL9::INSTR')
-inst_z = visa.ResourceManager().open_resource('ASRL8::INSTR')
-inst_xy.write_termination='\r'
-inst_xy.read_termination='\r'
-inst_z.write_termination='\r'
-inst_z.read_termination='\r'
-inst_xy.baud_rate = 9600
-inst_z.baud_rate = 9600
+# 
+# rm=visa.ResourceManager()
+# dev = rm.open_resource('ASRL9::INSTR')
+# dev.write_termination = '\r'
+# dev.read_termination = '\r'
+# dev.baud_rate = 9600
+# dev.query('*IDN?')
+# dev.close()
+#
+# inst_xy = visa.ResourceManager().open_resource('ASRL9::INSTR')
+# inst_z = visa.ResourceManager().open_resource('ASRL8::INSTR')
+# inst_xy.write_termination='\r'
+# inst_xy.read_termination='\r'
+# inst_z.write_termination='\r'
+# inst_z.read_termination='\r'
+# inst_xy.baud_rate = 9600
+# inst_z.baud_rate = 9600
 
 def step(axis, step_meters, direction):
     str_dir = 'CCW'
