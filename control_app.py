@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
         scriptDir = os.path.dirname(os.path.realpath("control_app.py"))
-        self.setWindowIcon(QIcon(scriptDir + os.path.sep + 'icons/LOGO.png'))
+        self.setWindowIcon(QIcon(scriptDir + os.path.sep + 'extras/icons/LOGO.png'))
 
         # Fixes the size of the screen. In my option the size I choose is visually
         # pleasant. If you want to have the option to resize the screen, comment
@@ -85,20 +85,32 @@ class MainWindow(QMainWindow):
         self.XYLayout.addWidget(Buttons(100, self.XYStep_Box), 2, 1)
         self.XYLayout.addWidget(Buttons(1000, self.XYStep_Box), 2, 2)
 
+        # Adding the LPD logo at the top
+        self.LPD_Icon = QLabel()
+        self.LPD_Icon.setAlignment(Qt.AlignCenter)
+        self.pixmap = QPixmap(scriptDir + os.path.sep + 'extras/icons/LPD_LOGO_inv.png')
+        self.LPD_Icon.setPixmap(self.pixmap)
+        self.resize(self.pixmap.width(), self.pixmap.height())
+        self.OuterLayout.addWidget(self.LPD_Icon, 0, 0)
+        self.Doc_Label = QLabel('GitHub: github.com/PedroPinh0/Suruga-Controller\nHelp: ppinho@ifi.unicamp.br')
+        self.Doc_Label.setFont(QFont("Helvetica", 14))
+        self.Doc_Label.setWordWrap(True);
+        self.OuterLayout.addWidget(self.Doc_Label, 0, 1, 1, 2)
+
         # Horizontal dividers
-        self.OuterLayout.addWidget(QHLine(), 0, 0, 1, 3)
-        self.OuterLayout.addWidget(QHLine(), 3, 0, 1, 3)
-        self.OuterLayout.addWidget(QHLine(), 6, 0, 1, 3)
+        self.OuterLayout.addWidget(QHLine(), 1, 0, 1, 3)
+        self.OuterLayout.addWidget(QHLine(), 4, 0, 1, 3)
+        self.OuterLayout.addWidget(QHLine(), 7, 0, 1, 3)
 
         # Adding the labels for each block of controllers
         self.XY_Label = QLabel("SAMPLE XY PLANE")
         self.XY_Label.setAlignment(Qt.AlignCenter)
         self.XY_Label.setFont(QFont("Helvetica", 18, weight = QFont.Bold))
-        self.OuterLayout.addWidget(self.XY_Label, 1, 0)
+        self.OuterLayout.addWidget(self.XY_Label, 2, 0)
         self.Z_Label = QLabel("TAPER Z AXIS")
         self.Z_Label.setAlignment(Qt.AlignCenter)
         self.Z_Label.setFont(QFont("Helvetica", 18, weight = QFont.Bold))
-        self.OuterLayout.addWidget(self.Z_Label, 4, 0)
+        self.OuterLayout.addWidget(self.Z_Label, 5, 0)
 
         # Net Z distance
         self.Z_Distance = QLineEdit("0.0")
@@ -106,8 +118,8 @@ class MainWindow(QMainWindow):
         self.ZDistance_label = QLabel(u"Net Z distance (µm):")
         self.ZDistance_label.setAlignment(Qt.AlignCenter)
         self.ZDistance_label.setFont(QFont("Helvetica", 14, weight = QFont.Bold))
-        self.OuterLayout.addWidget(self.ZDistance_label, 7, 0)
-        self.OuterLayout.addWidget(self.Z_Distance, 7, 2)
+        self.OuterLayout.addWidget(self.ZDistance_label, 8, 0)
+        self.OuterLayout.addWidget(self.Z_Distance, 8, 2)
 
         # Adding Widgets for ZLayout
         self.ZStep_Box = QLineEdit("0.0")
@@ -127,9 +139,9 @@ class MainWindow(QMainWindow):
 
         # Adding Widgets for Z-Up, Z-Down and Z-Clear
         self.up_button_z = QPushButton(self)
-        self.up_button_z.setIcon(QIcon('icons/UP.png'))
+        self.up_button_z.setIcon(QIcon('extras/icons/UP.png'))
         self.down_button_z = QPushButton(self)
-        self.down_button_z.setIcon(QIcon('icons/DOWN.png'))
+        self.down_button_z.setIcon(QIcon('extras/icons/DOWN.png'))
         self.UpDownLayout.addWidget(self.up_button_z)
         self.UpDownLayout.addWidget(self.down_button_z)
 
@@ -142,13 +154,13 @@ class MainWindow(QMainWindow):
 
         # Adding Widgets for ArrowsLayout
         self.up_button_xy = QPushButton(self)
-        self.up_button_xy.setIcon(QIcon('icons/UP.png'))
+        self.up_button_xy.setIcon(QIcon('extras/icons/UP.png'))
         self.left_button_xy = QPushButton(self)
-        self.left_button_xy.setIcon(QIcon('icons/LEFT.png'))
+        self.left_button_xy.setIcon(QIcon('extras/icons/LEFT.png'))
         self.right_button_xy = QPushButton(self)
-        self.right_button_xy.setIcon(QIcon('icons/RIGHT.png'))
+        self.right_button_xy.setIcon(QIcon('extras/icons/RIGHT.png'))
         self.down_button_xy = QPushButton(self)
-        self.down_button_xy.setIcon(QIcon('icons/DOWN.png'))
+        self.down_button_xy.setIcon(QIcon('extras/icons/DOWN.png'))
         self.ArrowsLayout.addWidget(self.up_button_xy, 0, 1)
         self.ArrowsLayout.addWidget(self.down_button_xy, 2, 1)
         self.ArrowsLayout.addWidget(self.left_button_xy, 1, 0)
@@ -164,9 +176,9 @@ class MainWindow(QMainWindow):
         self.btnXY_grp.buttonClicked.connect(self.on_clickXY)                   # Clicking any of the buttons trigger the function 'on_clickXY'
 
         # All the CLEAR buttons
-        self.OuterLayout.addWidget(Clear_Button(self.XYStep_Box), 2, 1)
-        self.OuterLayout.addWidget(Clear_Button(self.ZStep_Box), 5, 1)
-        self.OuterLayout.addWidget(Clear_Button(self.Z_Distance), 7, 1)
+        self.OuterLayout.addWidget(Clear_Button(self.XYStep_Box), 3, 1)
+        self.OuterLayout.addWidget(Clear_Button(self.ZStep_Box), 6, 1)
+        self.OuterLayout.addWidget(Clear_Button(self.Z_Distance), 8, 1)
 
         # Fixing some grid elements spacings
         self.XYLayout.setHorizontalSpacing(0)                                   # Thigtens the space between the buttons on the right side
@@ -178,10 +190,10 @@ class MainWindow(QMainWindow):
         self.UpDownLayout.setSpacing(10)
 
         # Nesting all layouts
-        self.OuterLayout.addLayout(self.ArrowsLayout, 2, 0)
-        self.OuterLayout.addLayout(self.XYLayout, 2, 2)
-        self.OuterLayout.addLayout(self.UpDownLayout, 5, 0)
-        self.OuterLayout.addLayout(self.ZLayout, 5, 2)
+        self.OuterLayout.addLayout(self.ArrowsLayout, 3, 0)
+        self.OuterLayout.addLayout(self.XYLayout, 3, 2)
+        self.OuterLayout.addLayout(self.UpDownLayout, 6, 0)
+        self.OuterLayout.addLayout(self.ZLayout, 6, 2)
 
         self.widget = QWidget(self)
         self.widget.setLayout(self.OuterLayout)
@@ -286,7 +298,7 @@ def step(axis, step_meters, direction):
 
 app = QApplication(sys.argv)
 window = MainWindow()
-window.setWindowTitle("Suruga Controller")
+window.setWindowTitle("Suruga Controller v1.01 (updated: Jul/2021)")
 window.show()
 ascii_welcome()
 sys.exit(app.exec())

@@ -6,12 +6,12 @@ from PIL import Image
 def ascii_welcome():
     # Open the LPD logo image file
     scriptDir = os.path.dirname(os.path.realpath("control_app.py"))
-    img = Image.open(scriptDir + os.path.sep + 'icons/LPD_LOGO.jpeg')
+    img = Image.open(scriptDir + os.path.sep + 'extras/icons/LPD_LOGO.jpeg')
 
     # Resize the image to fit perfectly inside the user's terminal screen
     width, height = img.size
     aspect_ratio = height/width
-    new_width = int(os.get_terminal_size()[0]/1.2)
+    new_width = int(os.get_terminal_size()[0])
     new_height = aspect_ratio * new_width * 0.55
     img = img.resize((new_width, int(new_height)))
 
