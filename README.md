@@ -15,6 +15,9 @@ This is open project so do what you want with this code. This code clearly isn't
 ## Example of the LOG
 <img src="https://github.com/PedroPinh0/Suruga-Controller/blob/master/extras/log_example.png?raw=true" width="500">
 
+            |  
+:-------------------------:|:-------------------------:
+<img src="https://github.com/PedroPinh0/Suruga-Controller/blob/master/extras/app_example.png?raw=true" width="500">  |  <img src="https://github.com/PedroPinh0/Suruga-Controller/blob/master/extras/log_example.png?raw=true" width="500">
 <!-- CONTACT -->
 # Contact
 
