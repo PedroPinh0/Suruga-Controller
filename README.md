@@ -10,10 +10,11 @@ There is also a Net Z distance traveled logger in the bottom of the window. You 
 This is open project so do what you want with this code. This code clearly isn't a masterpiece in terms of organization and definetly not Pythonic enough. Feel free to fork it and make it better.
 
 ## Example of the GUI
-![example](https://github.com/PedroPinh0/Suruga-Controller/blob/master/extras/app_example.png?raw=true)
+<img src="https://github.com/PedroPinh0/Suruga-Controller/blob/master/extras/app_example.png?raw=true" width="100" height="100">
 
 ## Example of the LOG
-![example](https://github.com/PedroPinh0/Suruga-Controller/blob/master/extras/log_example.png?raw=true)
+<img src="https://github.com/PedroPinh0/Suruga-Controller/blob/master/extras/log_example.png?raw=true" width="100" height="100">
+
 <!-- CONTACT -->
 # Contact
 
