@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         self.LPD_Icon.setPixmap(self.pixmap)
         self.resize(self.pixmap.width(), self.pixmap.height())
         self.OuterLayout.addWidget(self.LPD_Icon, 0, 0)
-        self.Doc_Label = QLabel('GitHub: github.com/PedroPinh0/Suruga-Controller\nHelp: ppinho@ifi.unicamp.br')
+        self.Doc_Label = QLabel('GitHub: github.com/PedroPinh0/Suruga-Controller')
         self.Doc_Label.setFont(QFont("Helvetica", 14))
         self.Doc_Label.setWordWrap(True);
         self.OuterLayout.addWidget(self.Doc_Label, 0, 1, 1, 2)
