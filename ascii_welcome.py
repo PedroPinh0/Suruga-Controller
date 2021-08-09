@@ -12,7 +12,7 @@ def ascii_welcome():
     width, height = img.size
     aspect_ratio = height/width
     new_width = int(os.get_terminal_size()[0])
-    new_height = aspect_ratio * new_width * 0.55
+    new_height = aspect_ratio * new_width * 0.5
     img = img.resize((new_width, int(new_height)))
 
     # Convert image to greyscale format
